@@ -1,0 +1,12 @@
+.app {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* {
+  font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
+  box-sizing: border-box;
+}
