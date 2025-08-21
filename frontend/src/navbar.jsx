@@ -1,6 +1,6 @@
 
 import "./ChatWindow.css";
-import Chat from "./Chat.jsx";
+import Chat from "./chat.jsx";
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useState, useEffect, useRef } from "react";
 
