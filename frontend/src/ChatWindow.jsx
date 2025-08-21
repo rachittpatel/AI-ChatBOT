@@ -26,7 +26,7 @@ function ChatWindow() {
         setNewChat(false);
 
         try {
-           const response = await fetch(`${import.meta.env.VITE_API_URL}/api/chat`, {
+          const response = await fetch("https://ai-chatbot-ahdz.onrender.com/api/chat", {
 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
