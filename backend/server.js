@@ -150,8 +150,21 @@ import mongoose from "mongoose";
 import fetch from "node-fetch";
 import chatRoutes from "./routes/chat.js";
 
+import path from "path";
+import { fileURLToPath } from "url";
+
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+
+
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// serve uploads folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 // Middleware
 app.use(express.json());
@@ -183,7 +196,7 @@ app.post("/api/ask", async (req, res) => {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                "HTTP-Referer": "https://ai-chat-bot-smoky.vercel.app", // 👈 use your frontend domain
+                "HTTP-Referer": "https://ai-chat-bot-smoky.vercel.app", // 👈  use your frontend domain
                 "X-Title": "Voice AI Chatbot"
             },
             body: JSON.stringify({
