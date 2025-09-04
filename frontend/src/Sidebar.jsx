@@ -191,13 +191,13 @@ const deleteThread = async (threadId) => {
   //   getAllThreads();
   // }, [currThreadId]);
 
-  // const createNewChat = () => {
-  //   setNewChat(true);
-  //   setPrompt("");
-  //   setReply(null);
-  //   setCurrThreadId(uuidv1());
-  //   setPrevChats([]);
-  // };
+  const createNewChat = () => {
+    setNewChat(true);
+    setPrompt("");
+    setReply(null);
+    setCurrThreadId(uuidv1());
+    setPrevChats([]);
+  };
 
   // const changeThread = async (newThreadId) => {
   //   setCurrThreadId(newThreadId);
