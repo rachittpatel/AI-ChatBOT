@@ -123,67 +123,117 @@ function Sidebar() {
     setPrevChats,
   } = useContext(MyContext);
 
-  const getAllThreads = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/thread");
-      const res = await response.json();
-      const filteredData = (res || []).map((thread) => ({
-        threadId: thread.threadId,
-        title: thread.title,
-      }));
-      setAllThreads(filteredData);
-    } catch (err) {
-      console.log("Failed to fetch threads:", err);
-    }
-  };
 
-  useEffect(() => {
-    getAllThreads();
-  }, [currThreadId]);
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
-  const createNewChat = () => {
-    setNewChat(true);
-    setPrompt("");
+const getAllThreads = async () => {
+  try {
+    const response = await fetch(`${API_BASE}/api/thread`);
+    const res = await response.json();
+    const filteredData = (res || []).map((thread) => ({
+      threadId: thread.threadId,
+      title: thread.title,
+    }));
+    setAllThreads(filteredData);
+  } catch (err) {
+    console.log("Failed to fetch threads:", err);
+  }
+};
+
+const changeThread = async (newThreadId) => {
+  setCurrThreadId(newThreadId);
+
+  try {
+    const response = await fetch(`${API_BASE}/api/thread/${newThreadId}`);
+    const res = await response.json();
+    const messages = Array.isArray(res) ? res : res?.messages;
+    setPrevChats(Array.isArray(messages) ? messages : []);
+    setNewChat(false);
     setReply(null);
-    setCurrThreadId(uuidv1());
-    setPrevChats([]);
-  };
+  } catch (err) {
+    console.log("Failed to load thread:", err);
+  }
+};
 
-  const changeThread = async (newThreadId) => {
-    setCurrThreadId(newThreadId);
+const deleteThread = async (threadId) => {
+  try {
+    const response = await fetch(`${API_BASE}/api/thread/${threadId}`, {
+      method: "DELETE",
+    });
+    const res = await response.json();
+    console.log(res);
 
-    try {
-      const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`);
-      const res = await response.json();
-      // Backend may return either the messages array directly OR { messages: [...] }
-      const messages = Array.isArray(res) ? res : res?.messages;
-      setPrevChats(Array.isArray(messages) ? messages : []);
-      setNewChat(false);
-      setReply(null);
-    } catch (err) {
-      console.log("Failed to load thread:", err);
+    setAllThreads((prev) => prev.filter((t) => t.threadId !== threadId));
+    if (threadId === currThreadId) {
+      createNewChat();
     }
-  };
+  } catch (err) {
+    console.log("Failed to delete thread:", err);
+  }
+};
 
-  const deleteThread = async (threadId) => {
-    try {
-      const response = await fetch(`http://localhost:8080/api/thread/${threadId}`, {
-        method: "DELETE",
-      });
-      const res = await response.json();
-      console.log(res);
 
-      // Re-render list
-      setAllThreads((prev) => prev.filter((t) => t.threadId !== threadId));
+  // const getAllThreads = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:8080/api/thread");
+  //     const res = await response.json();
+  //     const filteredData = (res || []).map((thread) => ({
+  //       threadId: thread.threadId,
+  //       title: thread.title,
+  //     }));
+  //     setAllThreads(filteredData);
+  //   } catch (err) {
+  //     console.log("Failed to fetch threads:", err);
+  //   }
+  // };
 
-      // If you deleted the currently open thread, start a fresh chat
-      if (threadId === currThreadId) {
-        createNewChat();
-      }
-    } catch (err) {
-      console.log("Failed to delete thread:", err);
-    }
-  };
+  // useEffect(() => {
+  //   getAllThreads();
+  // }, [currThreadId]);
+
+  // const createNewChat = () => {
+  //   setNewChat(true);
+  //   setPrompt("");
+  //   setReply(null);
+  //   setCurrThreadId(uuidv1());
+  //   setPrevChats([]);
+  // };
+
+  // const changeThread = async (newThreadId) => {
+  //   setCurrThreadId(newThreadId);
+
+  //   try {
+  //     const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`);
+  //     const res = await response.json();
+  //     // Backend may return either the messages array directly OR { messages: [...] }
+  //     const messages = Array.isArray(res) ? res : res?.messages;
+  //     setPrevChats(Array.isArray(messages) ? messages : []);
+  //     setNewChat(false);
+  //     setReply(null);
+  //   } catch (err) {
+  //     console.log("Failed to load thread:", err);
+  //   }
+  // };
+
+  // const deleteThread = async (threadId) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:8080/api/thread/${threadId}`, {
+  //       method: "DELETE",
+  //     });
+  //     const res = await response.json();
+  //     console.log(res);
+
+  //     // Re-render list
+  //     setAllThreads((prev) => prev.filter((t) => t.threadId !== threadId));
+
+  //     // If you deleted the currently open thread, start a fresh chat
+  //     if (threadId === currThreadId) {
+  //       createNewChat();
+  //     }
+  //   } catch (err) {
+  //     console.log("Failed to delete thread:", err);
+  //   }
+  // };
 
   return (
     <section className="sidebar">
